@@ -27,3 +27,8 @@ Más oprendszer esetén a https://pytorch.org oldalán lehet további verziókat
 ## Google Collab
 
 VGA kártya hiányában lehetőség van a Google Collabot használni. Ebben az esetben a VM elindítása előtt a <b>Futtatókörnyezet -> Futtatókörnyezet módosítása</b> menüpontban be kell állítani a hardveres gyórsítást <b>T4 GPU</b>-ra.
+
+## Használt súlyok
+
+Az <b>AI</b> mappába lévő súlyok az alábbi Google Drive linken érhetőek el:
+    https://drive.google.com/drive/folders/11QCblwU2oTMZSCGEz86I86E5RPmtZdTs?usp=sharing
