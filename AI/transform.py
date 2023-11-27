@@ -21,6 +21,9 @@ def distance(point1, point2):
     return math.sqrt((point1[0] - point2[0])**2 + (point1[1] - point2[1])**2)
 
 def resize_image_to_ratio(image, width_ratio, height_ratio):
+    if width_ratio == 0 or height_ratio == 0:
+        return image
+    
     original_height, original_width = image.shape[:2]
 
     # Calculate the new size based on the ratio
@@ -54,7 +57,7 @@ def transformImage(original_image):
     # Detect lines in the image
     horizontalLines = cv2.HoughLines(edges, rho=1, theta=np.pi/360, threshold=60)
     verticalLines = cv2.HoughLines(edges, rho=1, theta=np.pi/360, threshold=20)
-    if not horizontalLines.any() or not verticalLines.any():
+    if horizontalLines is None or verticalLines is None:
         return image
 
     horizontal_lines = []
@@ -96,6 +99,9 @@ def transformImage(original_image):
         -margin <= right_intersection[0] <= width + margin and -margin <= right_intersection[1] <= height + margin):
             intersections.append(h_line)
 
+    if not intersections:
+        return original_image
+    
     top_line = min(intersections, key=lambda y: y[0])
     bottom_line = max(intersections, key=lambda y: y[0])
 

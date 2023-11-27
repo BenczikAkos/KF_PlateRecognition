@@ -26,6 +26,11 @@ def process_image(IMAGE_URL):
 
     transformed_image = transform.transformImage(plate_image)
 
+    cv2.imshow("Plate Image", plate_image)
+    cv2.imshow("Transformed Image", transformed_image)
+    cv2.waitKey()
+    cv2.destroyAllWindows()
+
     # result = getString_OCR(transformed_image) - meghívni az OCR-t
     # if result == "":
     #   result = getString_OCR(plate_image) - ha nem sikerül a transform, próba az eredetivel
@@ -51,3 +56,7 @@ if __name__ == "__main__":
 
     # Call main function with parsed arguments
     main(args.input, args.output)
+
+    # Call only one picture
+    # URL = "./dataset/source/..."
+    # print(process_image(URL))
