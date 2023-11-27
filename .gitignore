@@ -1,4 +1,5 @@
 car_recognition/yolov3.weights
 AI/car_recognition.weights
 AI/plate_recognition.pt
-**/__pycache__/
+__pycache__/
+*.pyc
