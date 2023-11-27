@@ -16,7 +16,7 @@ valid_plate_samples = [
     '^[A-Za-z]{2} [A-Za-z]{2}-\d{3}$', # 2 letters, space, 2 letters, hyphen, 3 numbers
     '^[A-Za-z]{4,}-\d+$', # At least 4 letters, hyphen, at least 1 number
     '^[A-Za-z]{2} \d{2}-\d{2}$', # 2 letters, space, 2 numbers, hyphen, 2 numbers
-    '^OT \d \d{3}-', # First 2 letters are OT, space, 1 number, space, 3 numbers hyphen
+    '^OT \d \d{3}', # First 2 letters are OT, space, 1 number, space, 3 numbers
     '^OT \d{3} \d{3}$', # First 2 letters are OT, space, 3 numbers, space, 3 numbers
     '^[A-Za-z] \d{2}[A-Za-z]{2} \d{2}$', # 1 letter, space, 2 numbers and 2 letters, space, 2 numbers
     ] 
