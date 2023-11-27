@@ -17,6 +17,25 @@ def intersection(line1, line2):
     x0, y0 = int(np.round(x0)), int(np.round(y0))
     return [x0, y0]
 
+def distance(point1, point2):
+    return math.sqrt((point1[0] - point2[0])**2 + (point1[1] - point2[1])**2)
+
+def resize_image_to_ratio(image, width_ratio, height_ratio):
+    original_height, original_width = image.shape[:2]
+
+    # Calculate the new size based on the ratio
+    ratio = width_ratio / height_ratio
+    new_width = original_width
+    new_height = int(new_width / ratio)
+
+    # Ensure the new dimensions are larger than the original
+    if new_height < original_height:
+        new_height = original_height
+        new_width = int(new_height * ratio)
+
+    resized_image = cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_AREA)
+    return resized_image
+    
 def transformImage(original_image):
     gray_image = cv2.cvtColor(original_image, cv2.COLOR_BGR2GRAY)
     average_brightness = gray_image.mean()
@@ -104,5 +123,7 @@ def transformImage(original_image):
     perspective_matrix = cv2.getPerspectiveTransform(source_points, destination_points)
     transformed_image = cv2.warpPerspective(original_image, perspective_matrix, (width, height))
 
+    height, width, _ = transformed_image.shape
+    transformed_image = resize_image_to_ratio(transformed_image, distance(intersection(top_line, left_line),intersection(top_line, right_line)), distance(intersection(top_line, left_line),intersection(bottom_line, left_line)))
 
     return transformed_image
