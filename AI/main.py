@@ -5,10 +5,44 @@ import plate_recognition
 import transform
 import argparse
 import os
+import re
 
 CarRecognizer = car_recognition.CarRecognition()
 PlateRecognizer = plate_recognition.PlateRecognition()
 #OCR = orc.OCR() - inicializálni az OCR-t
+
+valid_plate_samples = [
+    '^[A-Za-z]{3}-\d{3}$', # 3 letters, hyphen, 3 numbers
+    '^[A-Za-z]{2} [A-Za-z]{2}-\d{3}$', # 2 letters, space, 2 letters, hyphen, 3 numbers
+    '^[A-Za-z]{4,}-\d+$', # At least 4 letters, hyphen, at least 1 number
+    '^[A-Za-z]{2} \d{2}-\d{2}$', # 2 letters, space, 2 numbers, hyphen, 2 numbers
+    '^OT \d \d{3}-', # First 2 letters are OT, space, 1 number, space, 3 numbers hyphen
+    '^OT \d{3} \d{3}$', # First 2 letters are OT, space, 3 numbers, space, 3 numbers
+    '^[A-Za-z] \d{2}[A-Za-z]{2} \d{2}$', # 1 letter, space, 2 numbers and 2 letters, space, 2 numbers
+    ] 
+
+
+def select_result(result_plate, result_transform):
+    plate_valid = False
+    transform_valid = False
+    for pattern in valid_plate_samples:
+        if re.search(pattern, result_plate):
+            plate_valid = True
+
+    for pattern in valid_plate_samples:
+        if re.search(pattern, result_transform):
+            transform_valid = True
+
+    if plate_valid and transform_valid:
+        return result_plate if len(plate_valid) > len(transform_valid) else result_transform
+    
+    if plate_valid:
+        return result_plate
+    
+    if transform_valid:
+        return result_transform
+    
+    return result_plate if len(plate_valid) > len(transform_valid) else result_transform
 
 def get_path(directory, file):
     return directory + '/' + file
@@ -31,9 +65,7 @@ def process_image(IMAGE_URL):
     cv2.waitKey()
     cv2.destroyAllWindows()
 
-    # result = getString_OCR(transformed_image) - meghívni az OCR-t
-    # if result == "":
-    #   result = getString_OCR(plate_image) - ha nem sikerül a transform, próba az eredetivel
+    # result = select_result(getString_OCR(plate_image), getString_OCR(transformed_image)) - meghívni az OCR-t
     # return result
     return "xoxo" # törölni
 
