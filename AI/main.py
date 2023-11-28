@@ -2,6 +2,7 @@ import cv2
 
 import car_recognition
 import plate_recognition
+import plate_text_recognition
 import transform
 import argparse
 import os
@@ -59,6 +60,9 @@ def process_image(IMAGE_URL):
     plate_image = PlateRecognizer.getPlate(car_image)
 
     transformed_image = transform.transformImage(plate_image)
+
+    plate_text = plate_text_recognition.tesseract_image_to_string(plate_image, 3, 1)
+    plate_text_transfromed = plate_text_recognition.tesseract_image_to_string(transformed_image, 3, 1)
 
     cv2.imshow("Plate Image", plate_image)
     cv2.imshow("Transformed Image", transformed_image)
