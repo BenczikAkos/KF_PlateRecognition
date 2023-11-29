@@ -2,7 +2,7 @@ import cv2
 
 import car_recognition
 import plate_recognition
-import plate_text_recognition
+import text_recognition
 import transform
 import argparse
 import os
@@ -68,8 +68,8 @@ def process_image(IMAGE_URL):
     
     transformed_image = transform.transformImage(plate_image)
 
-    plate_text = plate_text_recognition.tesseract_image_to_string(plate_image)
-    plate_text_transfromed = plate_text_recognition.tesseract_image_to_string(transformed_image)
+    plate_text = text_recognition.image_to_string(plate_image)
+    plate_text_transfromed = text_recognition.image_to_string(transformed_image)
 
     #cv2.imshow("Plate Image", plate_image)
     #cv2.imshow("Transformed Image", transformed_image)
@@ -107,7 +107,7 @@ if __name__ == "__main__":
 
     # Adding arguments with default values
     parser.add_argument("--input", help="Input directory path", default="./dataset/source")
-    parser.add_argument("--output", help="Output directory path", default="./dataset/done")
+    parser.add_argument("--output", help="Output directory path", default="./dataset")
 
     # Parse arguments
     args = parser.parse_args()

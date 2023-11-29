@@ -1,37 +1,39 @@
 import os
+import csv
 
-def compare_files(file1, file2):
-    """Compares the contents of two files."""
-    with open(file1, 'r') as f1, open(file2, 'r') as f2:
-        return f1.read() == f2.read()
+def compare_result_with_file(result, file_path):
+    """Compares a result string with the contents of a file."""
+    with open(file_path, 'r') as f:
+        return result.strip() == f.read().strip()
 
-def count_matching_files(result_dir, validate_dir):
-    """Counts files with the same name and content in two folders."""
-    matching_result = 0
-    number_of_files = 0
+def count_matching_results(csv_file, validate_dir):
+    """Counts the number of matching results from the CSV file with the text files in the validation directory."""
+    matching_results = 0
+    number_of_entries = 0
 
-    validators = os.listdir(validate_dir)
+    with open(csv_file, newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            filename = row['Filename']
+            result = row['Result']
+            validate_path = os.path.join(validate_dir, filename.replace('.jpg', '') + '.txt')
 
-    for validator in validators:
-        result_path = os.path.join(result_dir, validator)
-        validate_path = os.path.join(validate_dir, validator)
+            if os.path.isfile(validate_path):
+                if compare_result_with_file(result, validate_path):
+                    matching_results += 1
 
-        if os.path.isfile(result_path) and os.path.isfile(validate_path):
-            if compare_files(result_path, validate_path):
-                matching_result += 1
+            number_of_entries += 1
 
-        number_of_files += 1
-
-    return matching_result, number_of_files
+    return matching_results, number_of_entries
 
 def main():
-    result_dir = './done' 
+    csv_file = './result.csv' 
     validate_dir = './valid_result'
 
-    matching, all_files = count_matching_files(result_dir, validate_dir)
-    print(f'Number of matching files: {matching}')
-    print(f'Number of all files: {all_files}')
-    print(f'Accuracy: {matching / all_files} - {round(matching / all_files * 100, 2)} %')
+    matching, all_entries = count_matching_results(csv_file, validate_dir)
+    print(f'Number of matching results: {matching}')
+    print(f'Number of all entries: {all_entries}')
+    print(f'Accuracy: {matching / all_entries:.2f} - {round(matching / all_entries * 100, 2)} %')
 
 if __name__ == "__main__":
     main()
