@@ -12,6 +12,7 @@ CarRecognizer = car_recognition.CarRecognition()
 PlateRecognizer = plate_recognition.PlateRecognition()
 
 def clean_string(input_string):
+    input_string = input_string.replace("\n", "")
     cleaned_string = re.sub(r'[^A-Z0-9\s-]', '', input_string)
     cleaned_string = cleaned_string.strip(' ')
     cleaned_string = cleaned_string.strip('-')
@@ -29,6 +30,8 @@ valid_plate_samples = [
 
 
 def select_result(result_plate, result_transform):
+    result_plate = clean_string(result_plate)
+    result_transform = clean_string(result_transform)
     plate_valid = False
     transform_valid = False
     for pattern in valid_plate_samples:
@@ -78,7 +81,6 @@ def process_image(IMAGE_URL):
     #cv2.destroyAllWindows()
 
     result = select_result(plate_text, plate_text_transfromed)
-    result = clean_string(result)
     return result
 
 def main(input_dir, output_dir):

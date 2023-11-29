@@ -40,8 +40,8 @@ def main():
         table = []
         for image_name in os.listdir(cleared_path):
             result = ocr.ocr(str(cleared_path / image_name))
-            txts = [line[1][0] for line in result[0]]
-            scores = [line[1][1] for line in result[0]]
+            txts = [line[1][0] for line in result]
+            scores = [line[1][1] for line in result]
             image_name = image_name.replace('T_','')
             image_name = image_name.replace('O_','')
             print(image_name)
