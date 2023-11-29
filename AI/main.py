@@ -7,16 +7,12 @@ import transform
 import argparse
 import os
 import re
+from after_work import clean_string
+import csv
 
 CarRecognizer = car_recognition.CarRecognition()
 PlateRecognizer = plate_recognition.PlateRecognition()
 
-def clean_string(input_string):
-    input_string = input_string.replace("\n", "")
-    cleaned_string = re.sub(r'[^A-Z0-9\s-]', '', input_string)
-    cleaned_string = cleaned_string.strip(' ')
-    cleaned_string = cleaned_string.strip('-')
-    return cleaned_string
 
 valid_plate_samples = [
     '^[A-Za-z]{3}-\d{3}$', # 3 letters, hyphen, 3 numbers
@@ -87,19 +83,23 @@ def main(input_dir, output_dir):
     file_list = os.listdir(input_dir)
     total_files = len(file_list)
 
-    for index, image_src in enumerate(file_list):
-        result = process_image(get_path(input_dir, image_src))
-        with open(get_path(output_dir, get_result_file(image_src)), 'w') as file:
-            file.write(result.rstrip('\n'))
+    with open(output_dir + '/result.csv', 'w', newline='') as csvfile:
+        csvwriter = csv.writer(csvfile)
 
-        percent_complete = int((index / total_files) * 100)
+        # Write header row, if desired
+        csvwriter.writerow(['Filename', 'Result'])
+        for index, image_src in enumerate(file_list):
+            result = process_image(get_path(input_dir, image_src))
+            csvwriter.writerow([image_src, result.rstrip('\n')])
 
-        # Create the loading line display, e.g., [####    ]
-        loading_line = '[' + '#' * (percent_complete // 10) + ' ' * ((100 - percent_complete) // 10) + ']'
+            percent_complete = int((index / total_files) * 100)
 
-        # Print the loading line with a carriage return to overwrite the current line
-        # end='' prevents the default newline character after the print
-        print(f'\r{loading_line} {percent_complete}%', end='')
+            # Create the loading line display, e.g., [####    ]
+            loading_line = '[' + '#' * (percent_complete // 10) + ' ' * ((100 - percent_complete) // 10) + ']'
+
+            # Print the loading line with a carriage return to overwrite the current line
+            # end='' prevents the default newline character after the print
+            print(f'\r{loading_line} {percent_complete}%', end='')
 
 
 if __name__ == "__main__":
