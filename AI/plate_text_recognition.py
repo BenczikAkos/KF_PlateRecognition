@@ -1,6 +1,9 @@
 import cv2
+import numpy as np
 import pytesseract
-from PIL import Image, ImageFilter
+from PIL import Image
+
+
 
 def __preprocess_image(image):
     sharpening_kernel = np.array([[-1, -1, -1],
@@ -24,7 +27,7 @@ def __crop_and_resize(image):
                              interpolation = cv2.INTER_CUBIC)
     return resized_img
 
-def tesseract_image_to_string(image, ome, psm):
+def tesseract_image_to_string(image):
     """
     A függvény a képen látható szöveget adja vissza.
     -több kevesebb sikerrel-
@@ -53,7 +56,9 @@ def tesseract_image_to_string(image, ome, psm):
      Returns:
         string: A tesseract álltal a képről leolvasott szöveg
     """
-    prep_image = __preprocess_image(image)
-    custom_config = r'--oem {oem} --psm {psm}'
-    text = pytesseract.image_to_string(prep_image, config=custom_config)
+    
+    #prep_image = __preprocess_image(image)
+    custom_config = r'--oem 3 --psm 1 -c min_characters_to_try=3'
+    #pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+    text = pytesseract.image_to_string(image, config=custom_config)
     return text

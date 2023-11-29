@@ -10,7 +10,12 @@ import re
 
 CarRecognizer = car_recognition.CarRecognition()
 PlateRecognizer = plate_recognition.PlateRecognition()
-#OCR = orc.OCR() - inicializálni az OCR-t
+
+def clean_string(input_string):
+    cleaned_string = re.sub(r'[^A-Z0-9\s-]', '', input_string)
+    cleaned_string = cleaned_string.strip(' ')
+    cleaned_string = cleaned_string.strip('-')
+    return cleaned_string
 
 valid_plate_samples = [
     '^[A-Za-z]{3}-\d{3}$', # 3 letters, hyphen, 3 numbers
@@ -35,7 +40,7 @@ def select_result(result_plate, result_transform):
             transform_valid = True
 
     if plate_valid and transform_valid:
-        return result_plate if len(plate_valid) > len(transform_valid) else result_transform
+        return result_plate if len(result_plate) > len(result_transform) else result_transform
     
     if plate_valid:
         return result_plate
@@ -43,7 +48,7 @@ def select_result(result_plate, result_transform):
     if transform_valid:
         return result_transform
     
-    return result_plate if len(plate_valid) > len(transform_valid) else result_transform
+    return result_plate if len(result_plate) > len(result_transform) else result_transform
 
 def get_path(directory, file):
     return directory + '/' + file
@@ -59,25 +64,40 @@ def process_image(IMAGE_URL):
 
     plate_image = PlateRecognizer.getPlate(car_image)
 
+    if plate_image is None:
+        return ""
+    
     transformed_image = transform.transformImage(plate_image)
 
-    plate_text = plate_text_recognition.tesseract_image_to_string(plate_image, 3, 1)
-    plate_text_transfromed = plate_text_recognition.tesseract_image_to_string(transformed_image, 3, 1)
+    plate_text = plate_text_recognition.tesseract_image_to_string(plate_image)
+    plate_text_transfromed = plate_text_recognition.tesseract_image_to_string(transformed_image)
 
-    cv2.imshow("Plate Image", plate_image)
-    cv2.imshow("Transformed Image", transformed_image)
-    cv2.waitKey()
-    cv2.destroyAllWindows()
+    #cv2.imshow("Plate Image", plate_image)
+    #cv2.imshow("Transformed Image", transformed_image)
+    #cv2.waitKey()
+    #cv2.destroyAllWindows()
 
-    # result = select_result(getString_OCR(plate_image), getString_OCR(transformed_image)) - meghívni az OCR-t
-    # return result
-    return "xoxo" # törölni
+    result = select_result(plate_text, plate_text_transfromed)
+    result = clean_string(result)
+    return result
 
 def main(input_dir, output_dir):
-    for image_src in os.listdir(input_dir):
+    file_list = os.listdir(input_dir)
+    total_files = len(file_list)
+
+    for index, image_src in enumerate(file_list):
         result = process_image(get_path(input_dir, image_src))
         with open(get_path(output_dir, get_result_file(image_src)), 'w') as file:
-            file.write(result)
+            file.write(result.rstrip('\n'))
+
+        percent_complete = int((index / total_files) * 100)
+
+        # Create the loading line display, e.g., [####    ]
+        loading_line = '[' + '#' * (percent_complete // 10) + ' ' * ((100 - percent_complete) // 10) + ']'
+
+        # Print the loading line with a carriage return to overwrite the current line
+        # end='' prevents the default newline character after the print
+        print(f'\r{loading_line} {percent_complete}%', end='')
 
 
 if __name__ == "__main__":

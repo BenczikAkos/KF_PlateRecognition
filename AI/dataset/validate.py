@@ -31,7 +31,7 @@ def main():
     matching, all_files = count_matching_files(result_dir, validate_dir)
     print(f'Number of matching files: {matching}')
     print(f'Number of all files: {all_files}')
-    print(f'Accuracy: {matching / all_files}')
+    print(f'Accuracy: {matching / all_files} - {round(matching / all_files * 100, 2)} %')
 
 if __name__ == "__main__":
     main()
