@@ -39,7 +39,7 @@ def select_result(result_plate, result_transform):
             transform_valid = True
 
     if plate_valid and transform_valid:
-        return result_plate if len(result_plate) > len(result_transform) else result_transform
+        return result_transform
     
     if plate_valid:
         return result_plate
