@@ -33,7 +33,7 @@ def main():
     matching, all_entries = count_matching_results(csv_file, validate_dir)
     print(f'Number of matching results: {matching}')
     print(f'Number of all entries: {all_entries}')
-    print(f'Accuracy: {matching / all_entries:.2f} - {round(matching / all_entries * 100, 2)} %')
+    print(f'Accuracy: {matching / all_entries:.4f} - {round(matching / all_entries * 100, 2)} %')
 
 if __name__ == "__main__":
     main()

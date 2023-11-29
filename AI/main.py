@@ -1,14 +1,14 @@
 import cv2
-
-import car_recognition
-import plate_recognition
-import text_recognition
-import transform
 import argparse
 import os
 import re
-from after_work import clean_string
 import csv
+
+import car_recognition
+import plate_recognition
+from text_recognition import image_to_string
+from transform import transformImage
+from after_work import clean_string
 
 CarRecognizer = car_recognition.CarRecognition()
 PlateRecognizer = plate_recognition.PlateRecognition()
@@ -66,15 +66,10 @@ def process_image(IMAGE_URL):
     if plate_image is None:
         return ""
     
-    transformed_image = transform.transformImage(plate_image)
+    transformed_image = transformImage(plate_image)
 
-    plate_text = text_recognition.image_to_string(plate_image)
-    plate_text_transfromed = text_recognition.image_to_string(transformed_image)
-
-    #cv2.imshow("Plate Image", plate_image)
-    #cv2.imshow("Transformed Image", transformed_image)
-    #cv2.waitKey()
-    #cv2.destroyAllWindows()
+    plate_text = image_to_string(plate_image)
+    plate_text_transfromed = image_to_string(transformed_image)
 
     result = select_result(plate_text, plate_text_transfromed)
     return result
@@ -101,20 +96,15 @@ def main(input_dir, output_dir):
             # end='' prevents the default newline character after the print
             print(f'\r{loading_line} {percent_complete}%', end='')
 
+        loading_line = '[' + '#' * 10 + ' ' * (0) + ']'
+        print(f'\r{loading_line} {100}%', end='')
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Process some paths.")
 
-    # Adding arguments with default values
     parser.add_argument("--input", help="Input directory path", default="./dataset/source")
     parser.add_argument("--output", help="Output directory path", default="./dataset")
-
-    # Parse arguments
     args = parser.parse_args()
 
-    # Call main function with parsed arguments
     main(args.input, args.output)
-
-    # Call only one picture
-    # URL = "./dataset/source/..."
-    # print(process_image(URL))
