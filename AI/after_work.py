@@ -11,7 +11,7 @@ def clean_string(string):
     return string
 
 def modify_string(s):
-    pattern = r'([AEIOU]{2}[A-Za-z]{2,3})-\d{3}|([A-Z0-9]*[A-Z]{3})-\d{3}|([A-Z]{2,})(\d{2}-\d{2})|([A-Z]*[A-Z])-(\d{7})|0(T\d+)-(\d+)|(0*[A-Z]*0*[A-Z]*0*)-(\d{3})|HI([A-Z]{3,4})\d{3}'
+    pattern = r'([AEIOU]{2}[A-Za-z]{2,3})-\d{3}|([A-Z0-9]*[A-Z]{3})-\d{3}|([A-Z]{2,}) ?(\d{2}-\d{2})|([A-Z]*[A-Z])-(\d{7})|0(T\d+)-(\d+)|(0*[A-Z]*0*[A-Z]*0*)-(\d{3})|HI([A-Z]{3,4})\d{3}'
 
     def repl_func(m):
             if m.group(1):  # Matched the vowel condition
